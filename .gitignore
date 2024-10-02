@@ -1,0 +1,7 @@
+DHIS2.Rproj
+output/
+intermediates/
+.DS_Store
+.Rhistory
+.Rproj.user/
+.here
