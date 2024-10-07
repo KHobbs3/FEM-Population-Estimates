@@ -1,8 +1,12 @@
+
 # Population coverage estimates for facility catchment areas (all facilities)
 
 **Status**: `Active`
 
-**Last updated**: "`r format(Sys.time(), '%d %B, %Y')`"
+**Last updated**:
+```{r, echo=FALSE, results='asis'}
+cat(format(Sys.time(), '%d %B, %Y'))
+``` 
 
 
 ## Data
@@ -12,11 +16,12 @@
 ## Scripts
 - `dbscan.R`: Script to create clusters of facilities that are within x-km of each other and estimate the population covered by each cluster.
 -   `radio_populations.R`: Script to select facility catchment areas within radio bounds and compute the proportion of the radio bound population \# that each DBSCAN facility cluster covers.
--   `population_summary.R`: Script to summarise for each radio estimate
-    -   what the total population proportion would be if all clusters were included (ie. if all facilities were stocked)
+-   `population_summary.R`: Script to summarise for each radio estimate.
+    -   what the total population proportion would be if all clusters were included (ie. if all facilities were stocked).
     -   how many clusters are there (ie. how many facility groups would need to be stocked)?
     -   how many facilities are there (ie. how many facilities, at most, would need to be stocked)?
-- `stock_all_facilities.R`: Essentially the radio_populations.R script but for dissolved buffers of all facilities
+- `stock_all_facilities.R`: Essentially the radio_populations.R script but for dissolved buffers of all facilities.
+- `analyse_selected_facilities.R`: Estimates the number of replacement facilities and marginal population coverage of each point that is not sufficiently stocked.
 
 
 ## Roadmap

@@ -18,7 +18,7 @@ kilometres <- c(5,3,2,1)
 # READ DATA ----
 ##FACILITIES ----
 # 1. Read in the point layer (assuming it's in a shapefile or GeoJSON)
-point_layer <- st_read(here("../stockouts/output/summary/fac_stockouts_30_cutoff_geo.geojson"),
+point_layer <- st_read(here("../stockouts/output/summary/stockouts_per_facility_NAs.geojson"), #fac_stockouts_30_cutoff_geo.geojson
                        crs=4326)
 
 # 2. Reproject the point layer to EPSG:102024 (World Cylindrical Equal Area)
@@ -97,8 +97,6 @@ for (km in kilometres){
     
     # Store output of within spatial join
     intersect_points <- st_intersection(dissolved_buffers_full, station) %>% st_cast("POLYGON")
-    print(paste("Number of facilities within radio bounds:", length(intersect_points)))
-    
     
     # CALC: POPULATION ------
     if (nrow(intersect_points) >0 ){
@@ -114,7 +112,7 @@ for (km in kilometres){
         # export for validation
         # st_write(intersect_points, dsn = sprintf("intermediates/all_facilities_stocked/4_dissolved_buffers_all_points_%s_%skm.gpkg",sheet_name, km),
         #          layer = "reprojected_facilities", driver = "GPKG", delete_dsn = TRUE)
-        st_write(intersect_points, dsn = sprintf("intermediates/highly_stocked/intersect_stocked_30_%s_%skm.gpkg",sheet_name, km),
+        st_write(intersect_points, dsn = sprintf("intermediates/highly_stocked/intersect_stocked_all_%s_%skm.gpkg",sheet_name, km),
                  layer = "reprojected_facilities", driver = "GPKG", delete_dsn = TRUE)
 
   
@@ -147,9 +145,9 @@ for (km in kilometres){
   table <- do.call(rbind, table_list_flat)
   
   # Export radio station summary for x-KM
-  write.xlsx(table, file = sprintf("output/station_facility_populations/radio_buffer_populations_stocked_30_%gkm.xlsx", km))
+  write.xlsx(table, file = sprintf("output/station_facility_populations/radio_buffer_populations_stocked_all_%gkm.xlsx", km))
 }
 
 # check
-mapview::mapview( list(intersect_points, station),
-                  col.regions = list("blue", "red"))
+mapview::mapview( list(intersect_points, point_layer, station),
+                  col.regions = list("blue", "blue", "red"))

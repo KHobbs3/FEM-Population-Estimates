@@ -1,4 +1,12 @@
-# Script to estimate the population reached if *all* facilities within a radio bounds were stocked
+"
+Script to estimate the population reached if *all* facilities within a radio bounds were stocked
+
+Limitations:
+  * assumes that DHIS2 data reporting health facility visits is more complete than those reporting stockouts.
+    - This is generally true but there may be some exceptions. The exceptions would be excluded from the analysis.
+
+"
+
 library(sf)
 library(dbscan)
 library(dplyr)
@@ -99,9 +107,6 @@ for (km in kilometres){
     # Reproject the station to match the facility polygon layer
     station <- st_transform(station, proj)
     
-    # st_write(station, dsn = sprintf("intermediates/top_visited/station_check_%s_%skm.gpkg",sheet_name, km),
-    #          layer = "reprojected_facilities", driver = "GPKG", delete_dsn = TRUE)
-    
     # filter points within radio station
     # NB this excludes facilities BETWEEN stations
     # SOLUTION: use buffered points
@@ -168,5 +173,15 @@ for (km in kilometres){
 }
 
 # check
-mapview::mapview( list(top_facilities, stockouts_layer, intersect_points, station),
-                  col.regions = list("yellow", "blue", "red"))
+color_gradient <- colorRampPalette(c("white", "red"))
+
+indices <- which(lengths(st_intersects(stockouts_layer, station)) > 0)
+kept_stock <- stockouts_layer[indices,]
+
+mapview(
+  list(top_facilities, kept_stock, station),
+  zcol = list("total_visits",NULL, NULL),    # Specify the column for top_facilities, NULL for station
+  col.regions = list(color_gradient(100), "blue", "grey"), # Colors for each layer
+  legend = list(TRUE, FALSE, FALSE)                         # Show legend for total_visits
+)
+
