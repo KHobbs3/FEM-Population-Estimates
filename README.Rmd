@@ -1,4 +1,6 @@
-
+---
+output: github_document
+---
 # Population coverage estimates for facility catchment areas (all facilities)
 
 **Status**: `Active`
