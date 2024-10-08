@@ -23,7 +23,8 @@ cat(format(Sys.time(), '%d %B, %Y'))
     -   how many clusters are there (ie. how many facility groups would need to be stocked)?
     -   how many facilities are there (ie. how many facilities, at most, would need to be stocked)?
 - `stock_all_facilities.R`: Essentially the radio_populations.R script but for dissolved buffers of all facilities.
-- `analyse_selected_facilities.R`: Estimates the number of replacement facilities and marginal population coverage of each point that is not sufficiently stocked.
+- `analyse_selected_facilities.R`: Estimates the marginal population coverage of each point that is not sufficiently stocked using leave-one-out algorithm on *manually selected points*. Removes non-influential points and summarises coverage + number of facilities that would need to be stocked.
+- `leave_one_out.R`: The leave-one-out algorithm and summary from analyse_selected_facilities script on the complete universe of points.
 
 
 ## Roadmap
