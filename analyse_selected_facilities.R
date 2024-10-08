@@ -23,16 +23,6 @@ out_folder <- 'intermediates/top_visited/'
 
 # READ DATA ----
 ##FACILITIES ----
-stockouts_layer <- st_read(here("../stockouts/output/summary/fac_stockouts_30_cutoff_geo.geojson"),
-                           crs=4326) %>%
-                      dplyr::select(name, geometry) %>%
-                      mutate(high_stocks = TRUE)
-
-visits_layer <- st_read(here("../visits/output/visits_per_facility.geojson"),
-                        crs=4326) %>%
-                  dplyr::select(name, geometry) %>%
-                  mutate(high_stocks = FALSE)
-
 selected_facilities <- read.csv("intermediates/top_visited/3-manual_selection/top_facilities_to_stock_manual.csv")
 
 # get the names of the unique stations
@@ -45,46 +35,7 @@ stations <- selected_facilities %>%
 # Convert the data frame to an sf object, specifying the LAT and LON columns as coordinates
 sf_data <- st_as_sf(selected_facilities, coords = c("LON", "LAT"), crs = 4326) # EPSG:4326 is WGS 84 (common for lat/lon)
 
-
-# CONCATENATION ---------------
-sf_object <- rbind(stockouts_layer, visits_layer)
-
-
-# DEDUPLICATION ---------------
-# Identify duplicates based on geometry
-sf_duplicates <- sf_object %>%
-  group_by(geometry) %>%
-  filter(n() > 1) %>%
-  ungroup()
-
-# Remove duplicates from original data
-sf_object_unique <- sf_object %>%
-  distinct(geometry, .keep_all = TRUE)
-
-# Export the dropped geometries (e.g., as a CSV or shapefile)
-# For CSV (without geometry)
-write.csv(st_drop_geometry(sf_duplicates) %>% arrange(name), paste0(out_folder, "4-validation/duplicates/dropped_geometries.csv"))
-
-weird_dupes <- sf_object %>%
-  filter(name %in% c("D'idjo Centre de Santé", "kc ASAD Poste de Santé", "kc Nguizani 5 Km Centre Médical", "kl Kinguendi Centre de Santé" ,
-  "mg Binga Centre de Santé", "mg Bodala Centre de Santé", "mg Boso Dua Centre de Santé",
-  "nk CBCA Butembo Centre Médical", "nk Luofu Centre de Santé", "nk UCG Clinique", "nk Walikale Hôpital Général de Référence", 
-  "sk 5ème CELPA Centre Hospitalier", "tu Djombo Centre de Santé", "tu Losombo Poste de Santé", "tu Tofeke, Centre de Santé")
-  ) 
-
-
-## Visualize ---------------
-mapview(list(sf_object, weird_dupes),
-        col.regions = list("yellow", "blue"))
-
-## Export duplicates for validation ------------
-st_write(weird_dupes, dsn = sprintf("%sduplicates/validate_duplicates.gpkg",out_folder),
-         layer = "duplicates", driver = "GPKG", delete_dsn = TRUE)
-st_write(sf_object, dsn = sprintf("%sduplicates/facilities_concatenated.gpkg",out_folder),
-         layer = "duplicates_concatenated", driver = "GPKG", delete_dsn = TRUE)
-
 ## Reproject --------------
-sf_object <- st_transform(sf_object, crs = proj)
 sf_data <- st_transform(sf_data, crs = proj)
 
 
