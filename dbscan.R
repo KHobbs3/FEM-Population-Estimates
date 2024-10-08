@@ -190,8 +190,9 @@ for (km in kilometres) {
               
               
               # EXPORT ----------
-              # st_write(population_clusters, dsn = sprintf("dbscan/intermediates/4_population_coverage_%skm.gpkg", km),
-              #          layer = "reprojected_facilities", driver = "GPKG", delete_dsn = TRUE)
+              st_write(population_clusters, dsn = sprintf("dbscan/intermediates/4_population_coverage_%skm.gpkg", km),
+                       layer = "reprojected_facilities", driver = "GPKG", delete_dsn = TRUE)
+              
               #result
               mapview::mapview( list(point_layer, population_clusters, dissolved_buffers),
                                 col.regions = list("blue", "red", 'yellow'))
