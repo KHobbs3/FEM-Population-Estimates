@@ -168,19 +168,3 @@ mapview(list(sf_station_master, master_reduced),
 
 # Export Summary
 write.xlsx(master_summary, file = "output/manual_selection/REDUCED_summary_5km.xlsx")
-
-# TODO: COUNT NEARBY FACILITIES ---------------
-## Function ----
-# Set a threshold distance (e.g., 5000 meters)
-# distance_threshold <- 500
-
-# Calculate the number of points from 'layer2' near each point in 'layer1'
-# 
-# #TODO: Correct the following - 
-# sf_data$nearby_count <- sapply(st_geometry(sf_data), function(point) {
-#   sum((point, st_geometry(sf_object_unique), dist = distance_threshold)[[1]])
-# })
-# 
-# distance_matrix <- st_distance(sf_object)
-# 
-# distance_matrix <= 5000
